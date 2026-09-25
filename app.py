@@ -192,7 +192,7 @@ def evaluate_model():
 # SIDEBAR
 # =========================================================
 
-st.sidebar.title("🚢 Titanic Survival AI
+st.sidebar.title("🚢 Titanic Survival AI")
 
 st.sidebar.markdown("---")
 
