@@ -1291,7 +1291,7 @@ elif page == "🔮 Survival Prediction":
 elif page == "📊 Model Performance":
 
     st.markdown(
-        '<div class="main-title">🤖 Model Performance</div>',
+        '<div class="main-title">📊 Model Performance</div>',
         unsafe_allow_html=True
     )
 
