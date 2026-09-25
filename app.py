@@ -202,7 +202,7 @@ page = st.sidebar.radio(
         "🏠 Home",
         "📊 Data Analysis",
         "🔮 Survival Prediction",
-        "🤖 Model Performance",
+        "📊 Model Performance",
         "ℹ️ About Project"
     ]
 )
