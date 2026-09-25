@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
 import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -21,7 +20,7 @@ from sklearn.metrics import (
 # =========================================================
 
 st.set_page_config(
-    page_title="Titanic Survival AI",
+    page_title="Titanic Survival Prediction",
     page_icon="🚢",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -39,6 +38,7 @@ st.markdown("""
     background-color: #f5f7fb;
 }
 
+/* Main title */
 .main-title {
     font-size: 42px;
     font-weight: 800;
@@ -46,12 +46,14 @@ st.markdown("""
     margin-bottom: 5px;
 }
 
+/* Subtitle */
 .subtitle {
     font-size: 18px;
     color: #667085;
     margin-bottom: 25px;
 }
 
+/* Section title */
 .section-title {
     font-size: 27px;
     font-weight: 700;
@@ -60,12 +62,35 @@ st.markdown("""
     margin-bottom: 15px;
 }
 
+/* Small section title */
 .small-title {
-    font-size: 20px;
+    font-size: 21px;
     font-weight: 650;
     color: #14213d;
+    margin-top: 18px;
+    margin-bottom: 10px;
 }
 
+/* Chart title */
+.chart-title {
+    font-size: 18px;
+    font-weight: 650;
+    color: #14213d;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+/* Chart card */
+.chart-card {
+    background-color: white;
+    padding: 10px;
+    border-radius: 14px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0px 2px 8px rgba(0,0,0,0.04);
+    margin-bottom: 15px;
+}
+
+/* Metric cards */
 div[data-testid="stMetric"] {
     background-color: white;
     border: 1px solid #e5e7eb;
@@ -74,15 +99,12 @@ div[data-testid="stMetric"] {
     box-shadow: 0px 3px 10px rgba(0,0,0,0.04);
 }
 
-.prediction-card {
-    background-color: white;
-    padding: 25px;
-    border-radius: 15px;
-    border: 1px solid #e5e7eb;
-    margin-top: 20px;
-    margin-bottom: 20px;
+/* Sidebar */
+section[data-testid="stSidebar"] {
+    background-color: #ffffff;
 }
 
+/* Info box */
 .info-box {
     background-color: white;
     padding: 20px;
@@ -91,6 +113,7 @@ div[data-testid="stMetric"] {
     margin-bottom: 15px;
 }
 
+/* Footer */
 .footer {
     text-align: center;
     color: #7b8190;
@@ -104,13 +127,17 @@ div[data-testid="stMetric"] {
 
 
 # =========================================================
-# LOAD DATA
+# LOAD DATASET
 # =========================================================
 
 @st.cache_data
 def load_data():
     return pd.read_csv("train.csv")
 
+
+# =========================================================
+# LOAD MODEL
+# =========================================================
 
 @st.cache_resource
 def load_model():
@@ -151,12 +178,30 @@ def evaluate_model():
 
     predictions = model.predict(X_test)
 
-    accuracy = accuracy_score(y_test, predictions)
-    precision = precision_score(y_test, predictions)
-    recall = recall_score(y_test, predictions)
-    f1 = f1_score(y_test, predictions)
+    accuracy = accuracy_score(
+        y_test,
+        predictions
+    )
 
-    cm = confusion_matrix(y_test, predictions)
+    precision = precision_score(
+        y_test,
+        predictions
+    )
+
+    recall = recall_score(
+        y_test,
+        predictions
+    )
+
+    f1 = f1_score(
+        y_test,
+        predictions
+    )
+
+    cm = confusion_matrix(
+        y_test,
+        predictions
+    )
 
     report = classification_report(
         y_test,
@@ -165,8 +210,6 @@ def evaluate_model():
     )
 
     return (
-        y_test,
-        predictions,
         accuracy,
         precision,
         recall,
@@ -177,8 +220,6 @@ def evaluate_model():
 
 
 (
-    y_test,
-    predictions,
     accuracy,
     precision,
     recall,
@@ -192,29 +233,29 @@ def evaluate_model():
 # SIDEBAR
 # =========================================================
 
-st.sidebar.title("🚢 Titanic Survival AI")
+st.sidebar.title("Titanic ML Dashboard")
 
 st.sidebar.markdown("---")
 
 page = st.sidebar.radio(
-    "Navigate",
+    "Navigation",
     [
         "🏠 Home",
         "📊 Data Analysis",
         "🔮 Survival Prediction",
-        "📊 Model Performance",
+        "🤖 Model Performance",
         "ℹ️ About Project"
     ]
 )
 
 st.sidebar.markdown("---")
 
-st.sidebar.success(
-    "Random Forest Classifier"
+st.sidebar.info(
+    "Machine Learning Model: Random Forest"
 )
 
 st.sidebar.caption(
-    "Titanic Survival Prediction using Machine Learning"
+    "Titanic Survival Prediction System"
 )
 
 
@@ -231,17 +272,23 @@ if page == "🏠 Home":
 
     st.markdown(
         '<div class="subtitle">'
-        'An interactive Machine Learning dashboard for analyzing and '
-        'predicting Titanic passenger survival.'
+        'Machine Learning based passenger survival analysis and prediction.'
         '</div>',
         unsafe_allow_html=True
     )
 
-    # Hero image
+    # =====================================================
+    # TITANIC IMAGE
+    # =====================================================
+
     st.image(
         "https://upload.wikimedia.org/wikipedia/commons/f/fd/RMS_Titanic_3.jpg",
         use_container_width=True
     )
+
+    # =====================================================
+    # PROJECT OVERVIEW
+    # =====================================================
 
     st.markdown(
         '<div class="section-title">📌 Project Overview</div>',
@@ -250,12 +297,12 @@ if page == "🏠 Home":
 
     st.write(
         """
-        The Titanic Survival Prediction project uses historical passenger
-        information to understand survival patterns and predict whether a
-        passenger is likely to survive based on selected characteristics.
-        
-        The machine learning model uses passenger class, gender, age,
-        family information, fare and port of embarkation as input features.
+        This project uses historical Titanic passenger data to analyze
+        survival patterns and predict whether a passenger is likely to
+        survive based on their personal and travel information.
+
+        The system uses a Random Forest classification model and provides
+        an interactive Streamlit interface for data analysis and prediction.
         """
     )
 
@@ -274,7 +321,9 @@ if page == "🏠 Home":
         df["Survived"].sum()
     )
 
-    non_survivors = total_passengers - survivors
+    non_survivors = (
+        total_passengers - survivors
+    )
 
     survival_rate = (
         survivors / total_passengers
@@ -284,107 +333,150 @@ if page == "🏠 Home":
 
     with c1:
         st.metric(
-            "👥 Total Passengers",
+            "Total Passengers",
             f"{total_passengers:,}"
         )
 
     with c2:
         st.metric(
-            "🟢 Survivors",
+            "Survived",
             f"{survivors:,}"
         )
 
     with c3:
         st.metric(
-            "🔴 Non-Survivors",
+            "Did Not Survive",
             f"{non_survivors:,}"
         )
 
     with c4:
         st.metric(
-            "📈 Survival Rate",
+            "Overall Survival Rate",
             f"{survival_rate:.1f}%"
         )
 
     # =====================================================
-    # SURVIVAL PIE CHART
+    # SURVIVAL OVERVIEW
     # =====================================================
 
     st.markdown(
-        '<div class="section-title">🥧 Overall Survival Distribution</div>',
+        '<div class="section-title">📈 Survival Overview</div>',
         unsafe_allow_html=True
     )
 
-    pie_data = [
-        non_survivors,
-        survivors
-    ]
-
-    labels = [
-        "Did Not Survive",
-        "Survived"
-    ]
-
-    fig, ax = plt.subplots(figsize=(7, 5))
-
-    ax.pie(
-        pie_data,
-        labels=labels,
-        autopct="%1.1f%%",
-        startangle=90,
-        explode=(0, 0.04)
-    )
-
-    ax.set_title(
-        "Titanic Passenger Survival Distribution"
-    )
-
-    st.pyplot(fig)
+    home_col1, home_col2 = st.columns([1, 1])
 
     # =====================================================
-    # WORKFLOW
+    # HOME PIE CHART
+    # =====================================================
+
+    with home_col1:
+
+        st.markdown(
+            '<div class="chart-title">🥧 Overall Survival Distribution</div>',
+            unsafe_allow_html=True
+        )
+
+        survival_values = [
+            non_survivors,
+            survivors
+        ]
+
+        survival_labels = [
+            "Did Not Survive",
+            "Survived"
+        ]
+
+        fig, ax = plt.subplots(
+            figsize=(5, 3.5)
+        )
+
+        ax.pie(
+            survival_values,
+            labels=survival_labels,
+            autopct="%1.1f%%",
+            startangle=90,
+            explode=(0, 0.04)
+        )
+
+        ax.set_aspect("equal")
+
+        st.pyplot(
+            fig,
+            use_container_width=True
+        )
+
+        plt.close(fig)
+
+    # =====================================================
+    # MODEL SUMMARY
+    # =====================================================
+
+    with home_col2:
+
+        st.markdown(
+            '<div class="chart-title">🤖 Model Summary</div>',
+            unsafe_allow_html=True
+        )
+
+        st.metric(
+            "Algorithm",
+            "Random Forest"
+        )
+
+        st.metric(
+            "Model Accuracy",
+            f"{accuracy * 100:.2f}%"
+        )
+
+        st.metric(
+            "Training Dataset",
+            "891 Passengers"
+        )
+
+    # =====================================================
+    # MACHINE LEARNING WORKFLOW
     # =====================================================
 
     st.markdown(
-        '<div class="section-title">🧠 Machine Learning Workflow</div>',
+        '<div class="section-title">🔄 Machine Learning Workflow</div>',
         unsafe_allow_html=True
     )
 
-    st.markdown("""
-    **1️⃣ Dataset Collection**
+    workflow_col1, workflow_col2 = st.columns(2)
 
-    Titanic passenger dataset obtained from Kaggle.
+    with workflow_col1:
 
-    ↓
+        st.markdown("""
+        **1. Dataset Collection**
 
-    **2️⃣ Data Preprocessing**
+        Titanic passenger dataset is used for model development.
 
-    Missing values are handled and categorical data is encoded.
+        **2. Data Preprocessing**
 
-    ↓
+        Missing values are handled and categorical features are encoded.
 
-    **3️⃣ Feature Selection**
+        **3. Feature Selection**
 
-    Pclass, Sex, Age, SibSp, Parch, Fare and Embarked are selected.
+        Pclass, Sex, Age, SibSp, Parch, Fare and Embarked are selected.
+        """)
 
-    ↓
+    with workflow_col2:
 
-    **4️⃣ Model Training**
+        st.markdown("""
+        **4. Model Training**
 
-    Random Forest Classifier is trained using the prepared data.
+        A Random Forest Classifier is trained on the prepared dataset.
 
-    ↓
+        **5. Model Evaluation**
 
-    **5️⃣ Model Evaluation**
+        Accuracy, Precision, Recall, F1 Score and Confusion Matrix are calculated.
 
-    Accuracy, Precision, Recall, F1 Score and Confusion Matrix are calculated.
+        **6. Prediction**
 
-    ↓
-
-    **6️⃣ Prediction**
-
-    Streamlit application accepts passenger details and generates a prediction.
-    """)
+        The Streamlit application accepts passenger information and generates
+        a survival prediction.
+        """)
 
 
 # =========================================================
@@ -440,197 +532,264 @@ elif page == "📊 Data Analysis":
 
     with c4:
         st.metric(
-            "Features Used",
+            "Model Features",
             7
         )
 
     # =====================================================
-    # PIE CHART
+    # SURVIVAL + GENDER
     # =====================================================
 
-    st.markdown(
-        '<div class="section-title">🥧 Survival Distribution</div>',
-        unsafe_allow_html=True
-    )
+    chart_col1, chart_col2 = st.columns(2)
 
-    survival_counts = df["Survived"].value_counts()
+    # =====================================================
+    # SURVIVAL DISTRIBUTION
+    # =====================================================
 
-    fig, ax = plt.subplots(figsize=(7, 5))
+    with chart_col1:
 
-    ax.pie(
-        survival_counts.values,
-        labels=["Did Not Survive", "Survived"],
-        autopct="%1.1f%%",
-        startangle=90,
-        explode=(0, 0.04)
-    )
+        st.markdown(
+            '<div class="section-title">🥧 Survival Distribution</div>',
+            unsafe_allow_html=True
+        )
 
-    ax.set_title("Survival Distribution")
+        survival_counts = (
+            df["Survived"]
+            .value_counts()
+            .sort_index()
+        )
 
-    st.pyplot(fig)
+        fig, ax = plt.subplots(
+            figsize=(5, 3.5)
+        )
+
+        ax.pie(
+            survival_counts.values,
+            labels=[
+                "Did Not Survive",
+                "Survived"
+            ],
+            autopct="%1.1f%%",
+            startangle=90,
+            explode=(0, 0.04)
+        )
+
+        ax.set_title(
+            "Survival Distribution"
+        )
+
+        ax.set_aspect("equal")
+
+        st.pyplot(
+            fig,
+            use_container_width=True
+        )
+
+        plt.close(fig)
 
     # =====================================================
     # GENDER ANALYSIS
     # =====================================================
 
-    st.markdown(
-        '<div class="section-title">👩👨 Survival by Gender</div>',
-        unsafe_allow_html=True
-    )
+    with chart_col2:
 
-    gender_analysis = (
-        df.groupby(["Sex", "Survived"])
-        .size()
-        .unstack(fill_value=0)
-    )
+        st.markdown(
+            '<div class="section-title">👩👨 Survival by Gender</div>',
+            unsafe_allow_html=True
+        )
 
-    gender_analysis = gender_analysis.rename(
-        columns={
-            0: "Did Not Survive",
-            1: "Survived"
-        }
-    )
+        gender_analysis = (
+            df.groupby(
+                ["Sex", "Survived"]
+            )
+            .size()
+            .unstack(
+                fill_value=0
+            )
+        )
 
-    st.bar_chart(
-        gender_analysis,
-        use_container_width=True
-    )
+        gender_analysis = gender_analysis.rename(
+            columns={
+                0: "Did Not Survive",
+                1: "Survived"
+            }
+        )
+
+        st.bar_chart(
+            gender_analysis,
+            height=300,
+            use_container_width=True
+        )
 
     # =====================================================
-    # CLASS ANALYSIS
+    # CLASS + AGE GROUP
     # =====================================================
 
-    st.markdown(
-        '<div class="section-title">🎫 Passenger Class Analysis</div>',
-        unsafe_allow_html=True
-    )
+    chart_col1, chart_col2 = st.columns(2)
 
-    class_survival = (
-        df.groupby("Pclass")["Survived"]
-        .mean() * 100
-    )
+    # =====================================================
+    # PASSENGER CLASS ANALYSIS
+    # =====================================================
 
-    class_survival = class_survival.reset_index()
+    with chart_col1:
 
-    class_survival.columns = [
-        "Passenger Class",
-        "Survival Percentage"
-    ]
+        st.markdown(
+            '<div class="section-title">🎫 Passenger Class Analysis</div>',
+            unsafe_allow_html=True
+        )
 
-    fig, ax = plt.subplots(figsize=(8, 5))
+        class_survival = (
+            df.groupby(
+                "Pclass"
+            )["Survived"]
+            .mean()
+            * 100
+        )
 
-    sns.barplot(
-        data=class_survival,
-        x="Passenger Class",
-        y="Survival Percentage",
-        ax=ax
-    )
+        class_survival = (
+            class_survival
+            .reset_index()
+        )
 
-    ax.set_title(
-        "Survival Percentage by Passenger Class"
-    )
+        class_survival.columns = [
+            "Passenger Class",
+            "Survival Percentage"
+        ]
 
-    ax.set_ylabel(
-        "Survival Percentage (%)"
-    )
+        fig, ax = plt.subplots(
+            figsize=(5, 3.5)
+        )
 
-    ax.set_xlabel(
-        "Passenger Class"
-    )
+        sns.barplot(
+            data=class_survival,
+            x="Passenger Class",
+            y="Survival Percentage",
+            ax=ax
+        )
 
-    ax.set_ylim(
-        0,
-        100
-    )
+        ax.set_title(
+            "Survival Percentage by Passenger Class"
+        )
 
-    st.pyplot(fig)
+        ax.set_ylim(
+            0,
+            100
+        )
+
+        ax.set_xlabel(
+            "Passenger Class"
+        )
+
+        ax.set_ylabel(
+            "Survival (%)"
+        )
+
+        st.pyplot(
+            fig,
+            use_container_width=True
+        )
+
+        plt.close(fig)
 
     # =====================================================
     # AGE GROUP LINE CHART
     # =====================================================
 
-    st.markdown(
-        '<div class="section-title">📈 Survival Trend by Age Group</div>',
-        unsafe_allow_html=True
-    )
+    with chart_col2:
 
-    age_data = df[
-        ["Age", "Survived"]
-    ].dropna().copy()
+        st.markdown(
+            '<div class="section-title">📈 Survival Trend by Age Group</div>',
+            unsafe_allow_html=True
+        )
 
-    age_data["Age Group"] = pd.cut(
-        age_data["Age"],
-        bins=[
+        age_data = df[
+            ["Age", "Survived"]
+        ].dropna().copy()
+
+        age_data["Age Group"] = pd.cut(
+            age_data["Age"],
+            bins=[
+                0,
+                10,
+                20,
+                30,
+                40,
+                50,
+                60,
+                70,
+                100
+            ],
+            labels=[
+                "0-10",
+                "11-20",
+                "21-30",
+                "31-40",
+                "41-50",
+                "51-60",
+                "61-70",
+                "71+"
+            ]
+        )
+
+        age_survival = (
+            age_data.groupby(
+                "Age Group",
+                observed=False
+            )["Survived"]
+            .mean()
+            * 100
+        )
+
+        fig, ax = plt.subplots(
+            figsize=(5, 3.5)
+        )
+
+        ax.plot(
+            age_survival.index.astype(str),
+            age_survival.values,
+            marker="o",
+            linewidth=2
+        )
+
+        ax.set_title(
+            "Survival Percentage by Age Group"
+        )
+
+        ax.set_xlabel(
+            "Age Group"
+        )
+
+        ax.set_ylabel(
+            "Survival (%)"
+        )
+
+        ax.set_ylim(
             0,
-            10,
-            20,
-            30,
-            40,
-            50,
-            60,
-            70,
             100
-        ],
-        labels=[
-            "0-10",
-            "11-20",
-            "21-30",
-            "31-40",
-            "41-50",
-            "51-60",
-            "61-70",
-            "71+"
-        ]
-    )
+        )
 
-    age_survival = (
-        age_data.groupby(
-            "Age Group",
-            observed=False
-        )["Survived"]
-        .mean() * 100
-    )
+        ax.tick_params(
+            axis="x",
+            rotation=45
+        )
 
-    fig, ax = plt.subplots(
-        figsize=(10, 5)
-    )
+        ax.grid(
+            alpha=0.25
+        )
 
-    ax.plot(
-        age_survival.index.astype(str),
-        age_survival.values,
-        marker="o",
-        linewidth=2.5
-    )
+        st.pyplot(
+            fig,
+            use_container_width=True
+        )
 
-    ax.set_title(
-        "Survival Percentage by Age Group"
-    )
-
-    ax.set_xlabel(
-        "Age Group"
-    )
-
-    ax.set_ylabel(
-        "Survival Percentage (%)"
-    )
-
-    ax.set_ylim(
-        0,
-        100
-    )
-
-    ax.grid(
-        alpha=0.25
-    )
-
-    st.pyplot(fig)
+        plt.close(fig)
 
     # =====================================================
-    # SCATTER PLOT
+    # AGE VS FARE
     # =====================================================
 
     st.markdown(
-        '<div class="section-title">🔵 Age vs Fare Analysis</div>',
+        '<div class="section-title">📍 Age vs Fare Analysis</div>',
         unsafe_allow_html=True
     )
 
@@ -639,7 +798,7 @@ elif page == "📊 Data Analysis":
     ].dropna()
 
     fig, ax = plt.subplots(
-        figsize=(10, 6)
+        figsize=(10, 4.5)
     )
 
     survived_data = scatter_data[
@@ -653,19 +812,15 @@ elif page == "📊 Data Analysis":
     ax.scatter(
         not_survived_data["Age"],
         not_survived_data["Fare"],
-        alpha=0.5,
+        alpha=0.45,
         label="Did Not Survive"
     )
 
     ax.scatter(
         survived_data["Age"],
         survived_data["Fare"],
-        alpha=0.5,
+        alpha=0.45,
         label="Survived"
-    )
-
-    ax.set_title(
-        "Age vs Fare with Survival Status"
     )
 
     ax.set_xlabel(
@@ -676,56 +831,81 @@ elif page == "📊 Data Analysis":
         "Fare"
     )
 
+    ax.set_title(
+        "Passenger Age vs Fare"
+    )
+
     ax.legend()
 
-    st.pyplot(fig)
+    ax.grid(
+        alpha=0.2
+    )
+
+    st.pyplot(
+        fig,
+        use_container_width=True
+    )
+
+    plt.close(fig)
 
     # =====================================================
-    # FARE ANALYSIS
+    # AVERAGE FARE
     # =====================================================
 
     st.markdown(
-        '<div class="section-title">💰 Fare Analysis</div>',
+        '<div class="section-title">💰 Average Fare Analysis</div>',
         unsafe_allow_html=True
     )
 
-    fare_data = (
-        df.groupby("Survived")["Fare"]
-        .mean()
-        .reset_index()
-    )
+    fare_col1, fare_col2 = st.columns([1, 1])
 
-    fare_data["Status"] = fare_data[
-        "Survived"
-    ].map({
-        0: "Did Not Survive",
-        1: "Survived"
-    })
+    with fare_col1:
 
-    fig, ax = plt.subplots(
-        figsize=(8, 5)
-    )
+        st.markdown(
+            '<div class="chart-title">Average Fare by Survival</div>',
+            unsafe_allow_html=True
+        )
 
-    sns.barplot(
-        data=fare_data,
-        x="Status",
-        y="Fare",
-        ax=ax
-    )
+        fare_data = (
+            df.groupby(
+                "Survived"
+            )["Fare"]
+            .mean()
+            .reset_index()
+        )
 
-    ax.set_title(
-        "Average Fare by Survival Status"
-    )
+        fare_data["Status"] = fare_data[
+            "Survived"
+        ].map({
+            0: "Did Not Survive",
+            1: "Survived"
+        })
 
-    ax.set_xlabel(
-        "Survival Status"
-    )
+        fig, ax = plt.subplots(
+            figsize=(6, 3.5)
+        )
 
-    ax.set_ylabel(
-        "Average Fare"
-    )
+        sns.barplot(
+            data=fare_data,
+            x="Status",
+            y="Fare",
+            ax=ax
+        )
 
-    st.pyplot(fig)
+        ax.set_xlabel(
+            "Survival Status"
+        )
+
+        ax.set_ylabel(
+            "Average Fare"
+        )
+
+        st.pyplot(
+            fig,
+            use_container_width=True
+        )
+
+        plt.close(fig)
 
     # =====================================================
     # DATA PREVIEW
@@ -756,11 +936,14 @@ elif page == "🔮 Survival Prediction":
 
     st.markdown(
         '<div class="subtitle">'
-        'Enter passenger information and let the trained ML model estimate '
-        'the survival probability.'
+        'Enter passenger information to generate a machine learning estimate.'
         '</div>',
         unsafe_allow_html=True
     )
+
+    # =====================================================
+    # INPUT SECTION
+    # =====================================================
 
     st.markdown(
         '<div class="section-title">👤 Passenger Information</div>',
@@ -772,18 +955,18 @@ elif page == "🔮 Survival Prediction":
     with col1:
 
         pclass = st.selectbox(
-            "🎫 Passenger Class",
+            "Passenger Class",
             [1, 2, 3],
             help="1 = First Class, 2 = Second Class, 3 = Third Class"
         )
 
         sex = st.selectbox(
-            "👤 Gender",
+            "Gender",
             ["female", "male"]
         )
 
         age = st.number_input(
-            "🎂 Age",
+            "Age",
             min_value=0.0,
             max_value=100.0,
             value=25.0,
@@ -791,7 +974,7 @@ elif page == "🔮 Survival Prediction":
         )
 
         sibsp = st.number_input(
-            "👨‍👩‍👧 Siblings / Spouses",
+            "Siblings / Spouses",
             min_value=0,
             max_value=10,
             value=0,
@@ -801,7 +984,7 @@ elif page == "🔮 Survival Prediction":
     with col2:
 
         parch = st.number_input(
-            "👪 Parents / Children",
+            "Parents / Children",
             min_value=0,
             max_value=10,
             value=0,
@@ -809,7 +992,7 @@ elif page == "🔮 Survival Prediction":
         )
 
         fare = st.number_input(
-            "💰 Fare",
+            "Fare",
             min_value=0.0,
             max_value=600.0,
             value=32.0,
@@ -817,7 +1000,7 @@ elif page == "🔮 Survival Prediction":
         )
 
         embarked = st.selectbox(
-            "⚓ Port of Embarkation",
+            "Port of Embarkation",
             ["S", "C", "Q"],
             format_func=lambda x: {
                 "S": "Southampton",
@@ -833,6 +1016,10 @@ elif page == "🔮 Survival Prediction":
         use_container_width=True,
         type="primary"
     )
+
+    # =====================================================
+    # PREDICTION
+    # =====================================================
 
     if predict_button:
 
@@ -876,13 +1063,13 @@ elif page == "🔮 Survival Prediction":
         if prediction == 1:
 
             st.success(
-                "🟢 Model Prediction: Passenger is predicted to survive."
+                "Prediction: Passenger is predicted to survive."
             )
 
         else:
 
             st.error(
-                "🔴 Model Prediction: Passenger is predicted not to survive."
+                "Prediction: Passenger is predicted not to survive."
             )
 
         # =================================================
@@ -894,14 +1081,14 @@ elif page == "🔮 Survival Prediction":
         with c1:
 
             st.metric(
-                "🟢 Survival Probability",
+                "Survival Probability",
                 f"{survival_probability:.2f}%"
             )
 
         with c2:
 
             st.metric(
-                "🔴 Non-Survival Probability",
+                "Non-Survival Probability",
                 f"{non_survival_probability:.2f}%"
             )
 
@@ -926,7 +1113,7 @@ elif page == "🔮 Survival Prediction":
         })
 
         fig, ax = plt.subplots(
-            figsize=(8, 5)
+            figsize=(7, 3.8)
         )
 
         sns.barplot(
@@ -949,7 +1136,12 @@ elif page == "🔮 Survival Prediction":
             100
         )
 
-        st.pyplot(fig)
+        st.pyplot(
+            fig,
+            use_container_width=True
+        )
+
+        plt.close(fig)
 
         # =================================================
         # PASSENGER SUMMARY
@@ -971,7 +1163,7 @@ elif page == "🔮 Survival Prediction":
                 "Embarkation"
             ],
             "Value": [
-                f"{pclass}",
+                pclass,
                 sex.title(),
                 age,
                 sibsp,
@@ -1003,12 +1195,16 @@ elif page == "🔮 Survival Prediction":
             else "Did Not Survive"
         )
 
-        result_data["Survival Probability (%)"] = round(
+        result_data[
+            "Survival Probability (%)"
+        ] = round(
             survival_probability,
             2
         )
 
-        result_data["Non-Survival Probability (%)"] = round(
+        result_data[
+            "Non-Survival Probability (%)"
+        ] = round(
             non_survival_probability,
             2
         )
@@ -1050,7 +1246,7 @@ elif page == "🤖 Model Performance":
     )
 
     # =====================================================
-    # MODEL INFORMATION
+    # EVALUATION METRICS
     # =====================================================
 
     st.markdown(
@@ -1061,24 +1257,28 @@ elif page == "🤖 Model Performance":
     c1, c2, c3, c4 = st.columns(4)
 
     with c1:
+
         st.metric(
             "Accuracy",
             f"{accuracy * 100:.2f}%"
         )
 
     with c2:
+
         st.metric(
             "Precision",
             f"{precision * 100:.2f}%"
         )
 
     with c3:
+
         st.metric(
             "Recall",
             f"{recall * 100:.2f}%"
         )
 
     with c4:
+
         st.metric(
             "F1 Score",
             f"{f1 * 100:.2f}%"
@@ -1093,39 +1293,70 @@ elif page == "🤖 Model Performance":
         unsafe_allow_html=True
     )
 
-    fig, ax = plt.subplots(
-        figsize=(7, 5)
-    )
+    cm_col1, cm_col2 = st.columns([1, 1])
 
-    sns.heatmap(
-        cm,
-        annot=True,
-        fmt="d",
-        cmap="Blues",
-        xticklabels=[
-            "Did Not Survive",
-            "Survived"
-        ],
-        yticklabels=[
-            "Did Not Survive",
-            "Survived"
-        ],
-        ax=ax
-    )
+    with cm_col1:
 
-    ax.set_xlabel(
-        "Predicted"
-    )
+        fig, ax = plt.subplots(
+            figsize=(5.5, 4)
+        )
 
-    ax.set_ylabel(
-        "Actual"
-    )
+        sns.heatmap(
+            cm,
+            annot=True,
+            fmt="d",
+            cmap="Blues",
+            xticklabels=[
+                "Did Not Survive",
+                "Survived"
+            ],
+            yticklabels=[
+                "Did Not Survive",
+                "Survived"
+            ],
+            ax=ax
+        )
 
-    ax.set_title(
-        "Confusion Matrix"
-    )
+        ax.set_xlabel(
+            "Predicted"
+        )
 
-    st.pyplot(fig)
+        ax.set_ylabel(
+            "Actual"
+        )
+
+        ax.set_title(
+            "Confusion Matrix"
+        )
+
+        st.pyplot(
+            fig,
+            use_container_width=True
+        )
+
+        plt.close(fig)
+
+    with cm_col2:
+
+        st.markdown(
+            '<div class="chart-title">📌 What the Matrix Shows</div>',
+            unsafe_allow_html=True
+        )
+
+        st.write(
+            """
+            The confusion matrix compares the actual passenger outcomes
+            with the outcomes predicted by the machine learning model.
+
+            **True Negative:** Correctly predicted non-survivor.
+
+            **True Positive:** Correctly predicted survivor.
+
+            **False Positive:** Predicted survivor but passenger did not survive.
+
+            **False Negative:** Predicted non-survivor but passenger survived.
+            """
+        )
 
     # =====================================================
     # CLASSIFICATION REPORT
@@ -1136,9 +1367,13 @@ elif page == "🤖 Model Performance":
         unsafe_allow_html=True
     )
 
-    report_df = pd.DataFrame(report).transpose()
+    report_df = pd.DataFrame(
+        report
+    ).transpose()
 
-    report_df = report_df.round(3)
+    report_df = report_df.round(
+        3
+    )
 
     st.dataframe(
         report_df,
@@ -1157,19 +1392,26 @@ elif page == "🤖 Model Performance":
     info_col1, info_col2, info_col3 = st.columns(3)
 
     with info_col1:
+
         st.info(
             "**Algorithm**\n\nRandom Forest Classifier"
         )
 
     with info_col2:
+
         st.info(
             "**Number of Trees**\n\n200"
         )
 
     with info_col3:
+
         st.info(
             "**Random State**\n\n42"
         )
+
+    # =====================================================
+    # EVALUATION METHOD
+    # =====================================================
 
     st.markdown(
         '<div class="section-title">📌 Evaluation Method</div>',
@@ -1218,16 +1460,28 @@ elif page == "ℹ️ About Project":
     tech_col1, tech_col2, tech_col3, tech_col4 = st.columns(4)
 
     with tech_col1:
-        st.info("🐍 **Python**\n\nProgramming Language")
+
+        st.info(
+            "🐍 **Python**\n\nProgramming Language"
+        )
 
     with tech_col2:
-        st.info("🤖 **Scikit-learn**\n\nMachine Learning")
+
+        st.info(
+            "🤖 **Scikit-learn**\n\nMachine Learning"
+        )
 
     with tech_col3:
-        st.info("📊 **Pandas**\n\nData Analysis")
+
+        st.info(
+            "📊 **Pandas**\n\nData Analysis"
+        )
 
     with tech_col4:
-        st.info("🌐 **Streamlit**\n\nWeb Application")
+
+        st.info(
+            "🌐 **Streamlit**\n\nWeb Application"
+        )
 
     # =====================================================
     # FEATURES
