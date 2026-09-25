@@ -849,122 +849,120 @@ elif page == "📊 Data Analysis":
     plt.close(fig)
 
     # =====================================================
-# FARE ANALYSIS
-# =====================================================
-
-st.markdown(
-    '<div class="section-title">💰 Fare Analysis</div>',
-    unsafe_allow_html=True
-)
-
-fare_col1, fare_col2 = st.columns(2)
-
-
-# =====================================================
-# AVERAGE FARE BY SURVIVAL
-# =====================================================
-
-with fare_col1:
+    # FARE ANALYSIS
+    # =====================================================
 
     st.markdown(
-        '<div class="chart-title">Average Fare by Survival</div>',
+        '<div class="section-title">💰 Fare Analysis</div>',
         unsafe_allow_html=True
     )
 
-    fare_data = (
-        df.groupby(
+    fare_col1, fare_col2 = st.columns(2)
+
+    # =====================================================
+    # AVERAGE FARE BY SURVIVAL
+    # =====================================================
+
+    with fare_col1:
+
+        st.markdown(
+            '<div class="chart-title">Average Fare by Survival</div>',
+            unsafe_allow_html=True
+        )
+
+        fare_data = (
+            df.groupby(
+                "Survived"
+            )["Fare"]
+            .mean()
+            .reset_index()
+        )
+
+        fare_data["Status"] = fare_data[
             "Survived"
-        )["Fare"]
-        .mean()
-        .reset_index()
-    )
+        ].map({
+            0: "Did Not Survive",
+            1: "Survived"
+        })
 
-    fare_data["Status"] = fare_data[
-        "Survived"
-    ].map({
-        0: "Did Not Survive",
-        1: "Survived"
-    })
+        fig, ax = plt.subplots(
+            figsize=(5, 3.5)
+        )
 
-    fig, ax = plt.subplots(
-        figsize=(5, 3.5)
-    )
+        sns.barplot(
+            data=fare_data,
+            x="Status",
+            y="Fare",
+            ax=ax
+        )
 
-    sns.barplot(
-        data=fare_data,
-        x="Status",
-        y="Fare",
-        ax=ax
-    )
+        ax.set_xlabel(
+            "Survival Status"
+        )
 
-    ax.set_xlabel(
-        "Survival Status"
-    )
+        ax.set_ylabel(
+            "Average Fare"
+        )
 
-    ax.set_ylabel(
-        "Average Fare"
-    )
+        ax.set_title(
+            "Average Fare by Survival"
+        )
 
-    ax.set_title(
-        "Average Fare by Survival"
-    )
+        st.pyplot(
+            fig,
+            use_container_width=True
+        )
 
-    st.pyplot(
-        fig,
-        use_container_width=True
-    )
+        plt.close(fig)
 
-    plt.close(fig)
+    # =====================================================
+    # AVERAGE FARE BY PASSENGER CLASS
+    # =====================================================
 
+    with fare_col2:
 
-# =====================================================
-# AVERAGE FARE BY PASSENGER CLASS
-# =====================================================
+        st.markdown(
+            '<div class="chart-title">Average Fare by Passenger Class</div>',
+            unsafe_allow_html=True
+        )
 
-with fare_col2:
+        class_fare = (
+            df.groupby(
+                "Pclass"
+            )["Fare"]
+            .mean()
+            .reset_index()
+        )
 
-    st.markdown(
-        '<div class="chart-title">Average Fare by Passenger Class</div>',
-        unsafe_allow_html=True
-    )
+        fig, ax = plt.subplots(
+            figsize=(5, 3.5)
+        )
 
-    class_fare = (
-        df.groupby(
-            "Pclass"
-        )["Fare"]
-        .mean()
-        .reset_index()
-    )
+        sns.barplot(
+            data=class_fare,
+            x="Pclass",
+            y="Fare",
+            ax=ax
+        )
 
-    fig, ax = plt.subplots(
-        figsize=(5, 3.5)
-    )
+        ax.set_xlabel(
+            "Passenger Class"
+        )
 
-    sns.barplot(
-        data=class_fare,
-        x="Pclass",
-        y="Fare",
-        ax=ax
-    )
+        ax.set_ylabel(
+            "Average Fare"
+        )
 
-    ax.set_xlabel(
-        "Passenger Class"
-    )
+        ax.set_title(
+            "Average Fare by Passenger Class"
+        )
 
-    ax.set_ylabel(
-        "Average Fare"
-    )
+        st.pyplot(
+            fig,
+            use_container_width=True
+        )
 
-    ax.set_title(
-        "Average Fare by Passenger Class"
-    )
-
-    st.pyplot(
-        fig,
-        use_container_width=True
-    )
-
-    plt.close(fig)
+        plt.close(fig)
 
     # =====================================================
     # DATA PREVIEW
@@ -1290,7 +1288,7 @@ elif page == "🔮 Survival Prediction":
 # MODEL PERFORMANCE PAGE
 # =========================================================
 
-elif page == "🤖 Model Performance":
+elif page == "📊 Model Performance":
 
     st.markdown(
         '<div class="main-title">🤖 Model Performance</div>',
