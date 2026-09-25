@@ -52,13 +52,4 @@ The application provides visualizations for:
 - Streamlit
 - Joblib
 
-## 📂 Project Structure
 
-```text
-titanic-survival-prediction/
-│
-├── app.py
-├── train.csv
-├── titanic_model.pkl
-├── requirements.txt
-└── README.md
